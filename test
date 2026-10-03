@@ -1,0 +1,173 @@
+from pathlib import Path
+import json, random
+
+data = [
+("apostle", "(기독교의) 사도(12제자 중 한 명); (새로운 사상, 정책 등) 주창자, 선구자, 신봉자"),
+("apotheosis", "절정, 최고봉, 극치; 신격화, 이상화, 우상화, 이상형"),
+("archaeology", "고고학"),
+("archaic", "낡은, 구식의, 폐물이 된; 고어의, 고풍의"),
+("archive", "기록 보관소; (데이터 등을) 보관하다, 기록하다"),
+("autobiography", "자서전"),
+("autocracy", "전제 정치, 독재 정치, 독재자적인 통치"),
+("autograph", "(유명인의) 사인, 친필 서명; 사인을 하다, 서명하다; 자필 원고, 친필 문서; 자필의, 친필의"),
+("autonomy", "자율성, 자주성; 자치권, 자립"),
+("autopsy", "(사체의) 부검, 검시; 철저한 사후 분석"),
+("biennial", "2년마다의, 격년의; (식물이) 2년생인"),
+("bilateral", "양측의, 쌍방의, 두 당사자 간의, 상호적인; (의학, 생물학) 양측성의, 양쪽에 있는"),
+("binary", "두 부분으로 이루어진, 둘로 나뉜, 이원의; 두 가지 선택지만 있는, 양택일의; (컴퓨터) 2진법의; (천문, 학술) 두 개가 결합된, 쌍을 이루는"),
+("bygone", "지나간, 과거의; 과거사, 과거의 일"),
+("bypass", "우회로; 우회하다, 돌아가다, 피해 가다; (절차, 단계, 규칙, 문제 등) 건너뛰다, 무시하다, 제쳐 두다"),
+("by-product", "부산물, 부수적인 결과"),
+("bystander", "방관자, 구경꾼, 주변에서 지켜보는 사람; 행인, 무관한 제3자"),
+("catastrophe", "대참사, 큰 재앙; 파국, 완전한 실패"),
+("catholic", "가톨릭의, 천주교의, 가톨릭 신자; 폭넓은, 편견 없는, 포괄적인, 다방면의, 보편적인"),
+("dilemma", "딜레마, 진퇴양난"),
+("duel", "(양자 간의) 결투, 다툼, 싸움, 승부, 시합, 투쟁"),
+("duplicate", "복사(본), 중복, 사본; (다른 무엇과) 똑같은, 꼭 닮은, 사본의; 복제하다, 복사하다, 다시 중복해서 하다"),
+("diagnosis", "진단, 진찰, 분석"),
+("diagonal", "대각선(의), 사선(의)"),
+("dialect", "방언, 사투리")
+]
+words=[w for w,_ in data]; meaning=dict(data)
+
+contexts={
+"apostle":"He became an early ________ of the new educational philosophy, promoting it wherever he spoke.",
+"apotheosis":"The critic described the final movement of the symphony as the ________ of the composer's career.",
+"archaeology":"She studied ________ to learn how ancient societies can be reconstructed from material remains.",
+"archaic":"The expression sounds ________ today and is rarely used in ordinary conversation.",
+"archive":"The library plans to ________ its old newspapers in a searchable digital database.",
+"autobiography":"In her ________, the novelist recounts the experiences that shaped her career.",
+"autocracy":"Under the ________, political power was concentrated in the hands of a single ruler.",
+"autograph":"The collector paid a high price for the author's original ________ manuscript.",
+"autonomy":"The region demanded greater ________ so that it could make more of its own local decisions.",
+"autopsy":"The medical examiner performed an ________ to determine the cause of death.",
+"biennial":"The university holds a ________ conference, so it takes place every other year.",
+"bilateral":"The two countries signed a ________ agreement covering trade and security.",
+"binary":"The system uses a ________ code in which information is represented using two basic digits.",
+"bygone":"The museum exhibition evokes a ________ era of steam trains and handwritten letters.",
+"bypass":"The committee tried to ________ the usual approval procedure and submit the proposal directly.",
+"by-product":"Sulfur dioxide is a harmful ________ of some industrial processes.",
+"bystander":"A ________ called the police after seeing the accident from across the street.",
+"catastrophe":"The earthquake was an economic and humanitarian ________ for the region.",
+"catholic":"Her reading interests are remarkably ________; she enjoys history, science, poetry, and philosophy.",
+"dilemma":"He faced a difficult ________: accept the risky offer or remain in his current position.",
+"duel":"The two rivals agreed to a formal ________ to settle the dispute.",
+"duplicate":"Please make a ________ of this document before submitting the original.",
+"diagnosis":"The doctor made a careful ________ after reviewing the patient's symptoms and test results.",
+"diagonal":"Draw a ________ line from the upper-left corner to the lower-right corner.",
+"dialect":"The speaker's regional ________ was immediately recognizable to local listeners."
+}
+
+relations={
+"apostle":("Which word is closest in meaning to 'apostle' when it means a supporter of an idea?",["advocate","spectator","ruler","critic","bystander"],"advocate"),
+"apotheosis":("Which word is closest in meaning to 'apotheosis' in the sense of the highest point?",["culmination","decline","duplicate","dilemma","bystander"],"culmination"),
+"archaeology":("Which field is most closely related to 'archaeology'?",["study of ancient material remains","study of language sounds","study of modern elections","study of weather patterns","study of financial markets"],"study of ancient material remains"),
+"archaic":("Which word is closest in meaning to 'archaic'?",["obsolete","modern","bilateral","flexible","contemporary"],"obsolete"),
+"archive":("Which word is closest in meaning to 'archive' when used as a verb?",["preserve","destroy","ignore","invent","translate"],"preserve"),
+"autobiography":("Which description best matches 'autobiography'?",["a person's account of their own life","a biography written by another person","a fictional account of a future society","a record of political laws","a study of ancient artifacts"],"a person's account of their own life"),
+"autocracy":("Which form of government is most nearly opposite to 'autocracy'?",["democracy","dictatorship","absolute rule","despotism","tyranny"],"democracy"),
+"autograph":("Which word is closest in meaning to 'autograph' when it means a person's handwritten signature?",["signature","diagnosis","archive","dialect","duplicate"],"signature"),
+"autonomy":("Which word is closest in meaning to 'autonomy'?",["self-government","dictatorship","dependence","imitation","uniformity"],"self-government"),
+"autopsy":("Which procedure is most closely related to 'autopsy'?",["postmortem examination","voting procedure","language analysis","financial audit","archival preservation"],"postmortem examination"),
+"biennial":("Which phrase is closest in meaning to 'biennial'?",["every two years","every year","twice a month","every ten years","every other day"],"every two years"),
+"bilateral":("Which word is closest in meaning to 'bilateral'?",["two-sided","one-sided","unrelated","circular","universal"],"two-sided"),
+"binary":("Which phrase is most closely associated with 'binary'?",["two-part system","many-sided system","historical record","medical examination","regional speech"],"two-part system"),
+"bygone":("Which word is closest in meaning to 'bygone'?",["past","future","current","immediate","universal"],"past"),
+"bypass":("Which word is closest in meaning to 'bypass' when used as a verb?",["circumvent","follow","repair","repeat","diagnose"],"circumvent"),
+"by-product":("Which phrase is closest in meaning to 'by-product'?",["secondary result","main objective","original source","formal agreement","medical diagnosis"],"secondary result"),
+"bystander":("Which description best matches 'bystander'?",["a person who watches without taking part","a person who leads a movement","a person who performs an autopsy","a person who signs a document","a person who governs a country"],"a person who watches without taking part"),
+"catastrophe":("Which word is closest in meaning to 'catastrophe'?",["disaster","triumph","routine","agreement","signature"],"disaster"),
+"catholic":("Which word is closest in meaning to 'catholic' in the sense of broad and inclusive?",["comprehensive","narrow","exclusive","archaic","binary"],"comprehensive"),
+"dilemma":("Which situation best illustrates a 'dilemma'?",["having to choose between two difficult alternatives","having many easy choices","finding a lost document","signing a formal agreement","watching an accident"],"having to choose between two difficult alternatives"),
+"duel":("Which description best matches 'duel'?",["a contest or fight between two people","a debate among many people","a medical examination","a written autobiography","a historical archive"],"a contest or fight between two people"),
+"duplicate":("Which word is closest in meaning to 'duplicate' as a noun?",["copy","original","diagonal","dialect","catastrophe"],"copy"),
+"diagnosis":("Which word is closest in meaning to 'diagnosis'?",["identification of a disease or condition","preservation of documents","government by one ruler","a regional variety of speech","a formal duel"],"identification of a disease or condition"),
+"diagonal":("Which phrase best describes 'diagonal'?",["a slanting line connecting nonadjacent corners","a horizontal line","a two-sided agreement","a historical record","a medical analysis"],"a slanting line connecting nonadjacent corners"),
+"dialect":("Which word is closest in meaning to 'dialect'?",["regional variety of a language","autobiography","signature","disaster","postmortem examination"],"regional variety of a language")
+}
+
+questions=[]
+for w in words:
+    # type 1
+    others=[meaning[x] for x in words if x!=w]; random.shuffle(others)
+    opts=[meaning[w]]+others[:4]; random.shuffle(opts)
+    questions.append({"type":"EN-KO","word":w,"prompt":w,"options":opts,"answer":meaning[w]})
+    # type 2
+    others=[x for x in words if x!=w]; random.shuffle(others)
+    opts=[w]+others[:4]; random.shuffle(opts)
+    questions.append({"type":"KO-EN","word":w,"prompt":meaning[w],"options":opts,"answer":w})
+    # type 3
+    others=[x for x in words if x!=w]; random.shuffle(others)
+    opts=[w]+others[:4]; random.shuffle(opts)
+    questions.append({"type":"CLOZE","word":w,"prompt":contexts[w],"options":opts,"answer":w})
+    # type 4
+    p,opts,ans=relations[w]
+    random.shuffle(opts)
+    questions.append({"type":"RELATION","word":w,"prompt":p,"options":opts,"answer":ans})
+
+payload=json.dumps(questions,ensure_ascii=False)
+
+html=f"""<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vocabulary Test — 100 Questions</title>
+<style>
+*{{box-sizing:border-box}}body{{margin:0;background:#f5f6f8;color:#222;font-family:Arial,"Noto Sans KR",sans-serif}}
+.wrap{{max-width:920px;margin:auto;padding:28px 18px 70px}}h1{{margin:0 0 7px;font-size:28px}}
+.sub{{color:#666;margin-bottom:20px}}.top{{background:#fff;border:1px solid #ddd;border-radius:14px;padding:18px;margin-bottom:16px;display:flex;justify-content:space-between;gap:14px;align-items:center;flex-wrap:wrap}}
+button{{border:0;border-radius:9px;padding:11px 17px;font-size:15px;cursor:pointer;background:#222;color:#fff}}button.alt{{background:#e9eaed;color:#222}}
+.card{{background:#fff;border:1px solid #ddd;border-radius:14px;padding:20px;margin:14px 0}}.qno{{font-size:13px;color:#777;margin-bottom:8px}}
+.tag{{display:inline-block;font-size:12px;padding:4px 7px;border-radius:6px;background:#eee;margin-left:7px}}
+.prompt{{font-size:19px;font-weight:700;line-height:1.65;margin:6px 0 15px;white-space:pre-line}}
+.opt{{display:block;border:1px solid #ccc;border-radius:9px;padding:12px;margin:8px 0;cursor:pointer;line-height:1.5}}
+.opt:hover{{background:#f5f5f5}}.opt input{{margin-right:9px}}.opt.correct{{border-color:#333;background:#f1f1f1}}.opt.wrong{{border-color:#888;background:#fafafa}}
+.result{{display:none;background:#222;color:#fff;border-radius:14px;padding:18px;margin:18px 0;position:sticky;bottom:12px;z-index:5;line-height:1.6}}
+.detail{{display:none;margin-top:10px;padding:10px;border-radius:8px;background:#f0f1f3;line-height:1.6}}.small{{font-size:13px;color:#777}}
+.controls{{display:flex;gap:8px;align-items:center;flex-wrap:wrap}}.stats{{font-weight:700}}
+</style></head>
+<body><div class="wrap">
+<h1>Vocabulary Test</h1>
+<div class="sub">Apostle ~ Dialect · 25 words × 4 types = 100 questions · 5지선다</div>
+<div class="top">
+<div><strong>시험 구성</strong><br><span class="small">① 영어 → 한국어 25문항 · ② 한국어 → 영어 25문항 · ③ Cloze/문맥형 25문항 · ④ 의미 관계형 25문항</span></div>
+<div class="controls"><button onclick="shuffleQuestions()">전체 순서 섞기</button><button onclick="grade()">채점하기</button><button class="alt" onclick="resetTest()">처음부터</button></div>
+</div>
+<div id="quiz"></div><div id="result" class="result"></div>
+</div>
+<script>
+const original={payload};
+let current=original.slice();
+const labels={{"EN-KO":"영어 → 한국어","KO-EN":"한국어 → 영어","CLOZE":"Cloze / 문맥형","RELATION":"의미 관계형"}};
+function esc(s){{return s.replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");}}
+function shuffle(a){{for(let i=a.length-1;i>0;i--){{let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}}return a;}}
+function render(){{
+ const q=document.getElementById("quiz");q.innerHTML="";
+ current.forEach((it,i)=>{{
+  const c=document.createElement("div");c.className="card";c.dataset.answer=it.answer;c.dataset.word=it.word;
+  const opts=it.options.map((o,j)=>`<label class="opt"><input type="radio" name="q${{i}}" value="${{esc(o)}}"> ${{String.fromCharCode(65+j)}}. ${{esc(o)}}</label>`).join("");
+  c.innerHTML=`<div class="qno">Q${{i+1}} <span class="tag">${{labels[it.type]}}</span></div><div class="prompt">${{esc(it.prompt)}}</div>${{opts}}<div class="detail"></div>`;
+  q.appendChild(c);
+ }});
+ document.getElementById("result").style.display="none";window.scrollTo({{top:0,behavior:"smooth"}});
+}}
+function shuffleQuestions(){{current=shuffle(current.slice());render();}}
+function resetTest(){{current=original.slice();render();}}
+function grade(){{
+ let score=0,unanswered=0;const cards=[...document.querySelectorAll(".card")];
+ cards.forEach(c=>{{
+  const chosen=c.querySelector("input:checked"),labels=c.querySelectorAll(".opt"),ans=c.dataset.answer;
+  labels.forEach(x=>x.classList.remove("correct","wrong"));
+  if(!chosen)unanswered++;else if(chosen.value===ans){{score++;chosen.parentElement.classList.add("correct");}}else chosen.parentElement.classList.add("wrong");
+  labels.forEach(x=>{{if(x.querySelector("input").value===ans)x.classList.add("correct");}});
+  const d=c.querySelector(".detail");d.style.display="block";d.innerHTML=`정답: <strong>${{esc(ans)}}</strong> · 단어: <strong>${{esc(c.dataset.word)}}</strong>`;
+ }});
+ const pct=Math.round(score/cards.length*100),r=document.getElementById("result");
+ r.innerHTML=`<div class="stats">${{score}} / ${{cards.length}} · ${{pct}}점</div>미응답 ${{unanswered}}개`;
+ r.style.display="block";window.scrollTo({{top:0,behavior:"smooth"}});
+}}
+render();
+</script></body></html>"""
+
+path=Path("/mnt/data/vocabulary_test_100q_apostle_dialect.html")
+path.write_text(html,encoding="utf-8")
+print(path)
